@@ -1,0 +1,5 @@
+product_title,user_id,rating,comment,created_at
+Smartphone,645a1c2f2f4b5c3b9f1e2d3c,5,Muy buen producto,2024-04-01T10:00:00
+Laptop,645a1c2f2f4b5c3b9f1e2d3c,4,Funciona bien pero se calienta,2024-04-02T11:30:00
+Zapatos deportivos,645a1c2f2f4b5c3b9f1e2d3d,5,Excelentes para correr,2024-04-03T09:15:00
+Balón de fútbol,645a1c2f2f4b5c3b9f1e2d3e,3,Buena calidad pero se desinfla rápido,2024-04-04T08:20:00
