@@ -25,7 +25,7 @@ CREATE_CART_TABLE = """
         quantity INT,
         added_at TIMESTAMP,
         PRIMARY KEY ((user_id), product_id)
-    )
+    ) WITH CLUSTERING ORDER BY (product_id ASC)
 """
 # Tabla de historial de compras
 CREATE_PURCHASE_HISTORY_TABLE = """
@@ -40,26 +40,7 @@ CREATE_PURCHASE_HISTORY_TABLE = """
         PRIMARY KEY ((user_id), order_id)
     ) WITH CLUSTERING ORDER BY (order_id DESC)
 """
-# Tabla de recomendaciones personalizadas
-CREATE_RECOMMENDATIONS_TABLE = """
-    CREATE TABLE IF NOT EXISTS recommendations_by_user (
-        user_id TEXT,
-        recommended_product_id TEXT,
-        score FLOAT,
-        reason TEXT,
-        PRIMARY KEY ((user_id), recommended_product_id)
-    )
-"""
-# Productos en tendencia
-CREATE_TRENDING_PRODUCTS_TABLE = """
-    CREATE TABLE IF NOT EXISTS trending_products (
-        date DATE,
-        product_id TEXT,
-        name TEXT,
-        total_sales INT,
-        PRIMARY KEY ((date), total_sales, product_id)
-    ) WITH CLUSTERING ORDER BY (total_sales DESC)
-"""
+# Tabla de soporte a cliente 
 CREATE_SUPPORT_TICKETS_TABLE = """
     CREATE TABLE IF NOT EXISTS support_ticket_by_user (
         user_id TEXT,
@@ -79,8 +60,6 @@ def drop_all_tables(session):
         "users",
         "cart_by_user",
         "purchase_history_by_user",
-        "recommendations_by_user",
-        "trending_products",
         "support_ticket_by_user"
     ]
 
@@ -101,6 +80,4 @@ def create_keyspace_and_table(session):
     session.execute (CREATE_USERS_TABLE)
     session.execute(CREATE_CART_TABLE)
     session.execute (CREATE_PURCHASE_HISTORY_TABLE)
-    session.execute (CREATE_RECOMMENDATIONS_TABLE)
-    session.execute (CREATE_TRENDING_PRODUCTS_TABLE)
     session.execute(CREATE_SUPPORT_TICKETS_TABLE)

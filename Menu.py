@@ -11,7 +11,6 @@ import model
 
 DGRAPH_URI = os.getenv('DGRAPH_URI', 'localhost:9080')
 
-password = "12345"
 # Conexión directa con el servidor Dgraph usando gRPC.
 def create_client_stub():
     return pydgraph.DgraphClientStub(DGRAPH_URI)
@@ -47,7 +46,8 @@ def print_menuPerfil():
 4.- Ver devoluciones
 5.- Generar devolucion 
 6.- Soporte
-7.- Salir""")
+7.- Ver historial de compras
+8.- Salir""")
 
 def print_menuCarro():
     print("""\n########## Ecommerce ##########
@@ -67,8 +67,8 @@ def print_menuProductos():
 7.- Ver productos populares 
 8.- Mostrar productos y reseñas por categoria
 9.- Mostrar los productos mejores calificados
-10.- Salir""")    
-
+10.- Salir""")
+        
 def print_menuFavoritos():
     print("""\n########## Ecommerce ##########
 1.- Ver Favoritos 
@@ -79,7 +79,7 @@ def print_menuFavoritos():
     
 def main():
     user = input("Ingresa tu usuario(Ej. user_1):")
-
+    usercp = user
     while True:
         print_menu()
         option = int(input("Ingresa una opcion:"))
@@ -96,6 +96,7 @@ def main():
                     username = input("Ingresa un nombre de usuario:")
                     ModelDgraph.actualizar_username(client, user, username)
                     Consultas.actualizar_username(session,user, username)
+                    user=username
                 elif opcion == 3:
                     print(" Actualizar teléfono")
                     telefono = input("Ingrese un numero de telefono:")
@@ -113,6 +114,9 @@ def main():
                     print("Ver tickets de soporte")
                     Consultas.consultar_tickets_soporte(session, user)
                 elif opcion == 7:
+                    print("Ver historial de compra")
+                    Consultas.consultar_historial_compras(session, user)
+                elif opcion == 8:
                     break
                 else:
                     print("Opción inválida")
@@ -123,7 +127,7 @@ def main():
                 opcion = int(input("Ingresa una opcion:"))
                 if opcion == 1:
                     print("Ver carrito")
-                    user_id = Consultas.formatear_user_id(user)
+                    user_id = usercp
                     Consultas.consultar_carrito(session, user_id)
                 elif opcion == 2:
                     print("Agregar producto al carrito")
@@ -176,6 +180,10 @@ def main():
                     print(result)
                 elif opcion == 3:
                     print("Buscar por categoría y precio")
+                    print("Formal Wear, Bottoms, Tops, Outerwear, " \
+                    "\nSportswear, Anime Collection, Accessories, " \
+                    "\nDresses, Footwear, K-Pop Style, Oversized, " \
+                    "\nCasual Wear, Underwear")
                     category = input("Ingresa la categoria:")
                     min_price = int(input("Precio mínimo: "))
                     max_price = int(input("Precio máximo: "))

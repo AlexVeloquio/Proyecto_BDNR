@@ -49,30 +49,6 @@ def insert_compras(session):
                 datetime.datetime.fromisoformat(row['purchased_at'])
             ))
 
-def insert_recomendaciones(session):
-    with open("data/recommendations_by_user.csv", newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        query = session.prepare("INSERT INTO recommendations_by_user (user_id, recommended_product_id, score, reason) VALUES (?, ?, ?, ?)")
-        for row in reader:
-            session.execute(query, (
-                row['user_id'],
-                row['recommended_product_id'],
-                float(row['score']),
-                row['reason']
-            ))
-
-def insert_tendencias(session):
-    with open("data/trending_products.csv", newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        query = session.prepare("INSERT INTO trending_products (date, product_id, name, total_sales) VALUES (?, ?, ?, ?)")
-        for row in reader:
-            session.execute(query, (
-                datetime.datetime.strptime(row['date'], '%Y-%m-%d').date(),
-                row['product_id'],
-                row['name'],
-                int(row['total_sales'])
-            ))
-
 def insert_tickets(session):
     with open("data/support_ticket_by_user.csv", newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -94,8 +70,6 @@ def poblar_tablas():
     insert_usuarios(session)
     insert_carrito(session)
     insert_compras(session)
-    insert_recomendaciones(session)
-    insert_tendencias(session)
     insert_tickets(session) 
     print("Datos insertados correctamente en Cassandra.")
 

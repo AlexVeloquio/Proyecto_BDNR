@@ -17,7 +17,6 @@ def set_schema(client):
         phone
         birthdate
         created_at
-        ha_comprado
         tiene_favoritos
         hizo_devolucion
     }
@@ -44,7 +43,6 @@ def set_schema(client):
     phone: string .
     birthdate: datetime .
     created_at: datetime .
-    ha_comprado: [uid] .
     tiene_favoritos: [uid] .
     hizo_devolucion: [uid] .
     
@@ -156,31 +154,6 @@ def load_categoria(file_path):
 
 
 #Relaciones:
-
-def ha_comprado(file_path, users_uids, productos_uids):
-    from collections import defaultdict
-    txn = client.txn()
-    try:
-        relaciones = defaultdict(list)
-        with open(file_path, 'r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                username = row['user_id']
-                producto_id = row['Productos_id']
-                if username in users_uids and producto_id in productos_uids:
-                    relaciones[users_uids[username]].append({'uid': productos_uids[producto_id]})
-        
-        for user_uid, productos in relaciones.items():
-            mutation = {
-                'uid': user_uid,
-                'ha_comprado': productos
-            }
-            print(f"Relacionando usuario {user_uid} con productos comprados: {[p['uid'] for p in productos]}")
-            txn.mutate(set_obj=mutation)
-        
-        txn.commit()
-    finally:
-        txn.discard()
 
 
 def hizo_devolucion(file_path, users_uids, devoluciones_uids):
@@ -321,7 +294,6 @@ def create_data(client):
 
     # Crear relaciones
     tiene_favoritos('data/favoritos.csv', users_uids, productos_uids)
-    ha_comprado('data/ha_comprado.csv', users_uids, productos_uids)
     hizo_devolucion('data/hizo_devolucion.csv', users_uids, devoluciones_uids)
     tiene_categoria('data/producto_categoria.csv', productos_uids, categorias_uids)
     de_producto('data/de_productos.csv', devoluciones_uids, productos_uids)
