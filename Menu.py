@@ -177,7 +177,11 @@ def main():
                     print("Buscar producto")
                     titulo = input("Ingresa el nombre del producto:")
                     result= model.get_product_by_title(titulo)
-                    print(result)
+                    print(f"=== Detalles del Producto: {title} ===\n")
+                    print(f"Descripción: {result['description']}")
+                    print(f"Precio: ${result['price']}")
+                    print(f"Stock: {result['stock']}")
+                    print(f"Categoría: {result['category']}\n")
                 elif opcion == 3:
                     print("Buscar por categoría y precio")
                     print("Formal Wear, Bottoms, Tops, Outerwear, " \
@@ -188,16 +192,18 @@ def main():
                     min_price = int(input("Precio mínimo: "))
                     max_price = int(input("Precio máximo: "))
                     results = model.get_products_by_category_price(category, min_price, max_price)
+                    print(f"=== Productos en '{category}' entre ${min_price} y ${max_price} ===\n")
                     for p in results:
-                        print(p)
+                        print(f"• {p['title']} - ${p['price']} ({p['category']})")
                 elif opcion == 4:
                     print("Buscar por palabra clave")
                     keyword = input("Palabra clave: ")
                     min_price = int(input("Precio mínimo: "))
                     max_price = int(input("Precio máximo: "))
                     results = model.search_products_by_keyword(keyword, min_price, max_price)
+                    print(f"=== Resultados de búsqueda: '{keyword}' entre ${min_price} y ${max_price} ===\n")
                     for p in results:
-                     print(p)
+                     print(f"• {p['title']} - ${p['price']} ({p['category']})")
                 elif opcion == 5:
                     print("Ver reseñas del producto")
                     title = input("Título del producto: ")
@@ -220,8 +226,9 @@ def main():
                 elif opcion == 7:
                     print("Ver productos populares")
                     results = model.get_popular_products()
+                    print("=== Productos Populares de la Última Semana ===\n")
                     for t in results:
-                        print(t)
+                        print(f"Título: {t['product_title']} - Score: {t['last_week_score']} - Views: {t['views']} - Sales: {t['sales']}")
                 elif opcion == 8:
                     print("Mostrar productos y reseñas por categoría")
                     category = input("Categoría: ")
@@ -232,8 +239,9 @@ def main():
                     print("Productos mejores calificados")
                     min_rating = float(input("Rating mínimo: "))
                     results = model.get_top_rated_products(min_rating)
+                    print(f"=== Productos mejor calificados con rating > {min_rating} ===\n")
                     for p in results:
-                         print(p)
+                        print(f"Título: {p['title']} - Precio: ${p['price']} - Categoría: ({p['category']}) - Rating: {p['rating']:.2f}")
                 elif opcion == 10:
                     break
                 else:
