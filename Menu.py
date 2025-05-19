@@ -47,7 +47,8 @@ def print_menuPerfil():
 5.- Generar devolucion 
 6.- Soporte
 7.- Ver historial de compras
-8.- Salir""")
+8.- Crear ticket para soporte
+9.- Salir""")
 
 def print_menuCarro():
     print("""\n########## Ecommerce ##########
@@ -117,6 +118,11 @@ def main():
                     print("Ver historial de compra")
                     Consultas.consultar_historial_compras(session, user)
                 elif opcion == 8:
+                    print("Crear nuevo ticket de soporte")
+                    subject = input("Asunto del ticket: ")
+                    message = input("Mensaje del ticket: ")
+                    Consultas.crear_ticket_soporte(session, user, subject, message)
+                elif opcion == 9:
                     break
                 else:
                     print("Opción inválida")
@@ -177,7 +183,7 @@ def main():
                     print("Buscar producto")
                     titulo = input("Ingresa el nombre del producto:")
                     result= model.get_product_by_title(titulo)
-                    print(f"=== Detalles del Producto: {title} ===\n")
+                    print(f"=== Detalles del Producto: {titulo} ===\n")
                     print(f"Descripción: {result['description']}")
                     print(f"Precio: ${result['price']}")
                     print(f"Stock: {result['stock']}")

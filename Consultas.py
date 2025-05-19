@@ -1,10 +1,30 @@
 from cassandra.cluster import Cluster
 from datetime import datetime
-
+from uuid import uuid1
 def connect():
     cluster = Cluster(["localhost"])
     session = cluster.connect("ecommerce")
     return session
+
+def user(session, usercp):
+    user_id = usercp.replace("_", "")
+    query = session.prepare(""" 
+        SELECT user_id, username,  email, phone, birthdate
+        FROM users
+        WHERE user_id = ?
+""")
+    rows = session.execute(query, [user_id])
+    
+    print(f"\nInformación del usuario:")
+    encontrado = False
+    for row in rows:
+        encontrado = True
+        print(f"- username: {row.username}")
+        print(f"  Correo: {row.email}")
+        print(f"  Teléfono: {row.phone}")
+        print(f"  Fecha de nacimiento: {row.birthdate}")
+    if not encontrado:
+        print("Usuario no encontrado.")
 
 def consultar_carrito(session, usercp):
     user_id = usercp.replace("_", "")
@@ -88,5 +108,21 @@ def actualizar_telefono(session, usercp, nuevo_telefono):
     query = session.prepare("""
         UPDATE users SET phone = ? WHERE user_id = ?
     """)
+    
     session.execute(query, (nuevo_telefono, user_id))
 
+def crear_ticket_soporte(session, usercp, subject, message):
+    user_id = usercp.replace("_", "")
+    ticket_id = uuid1()  
+    create_at = datetime.utcnow()
+    status = "Abierto"
+    response = "En proceso"
+    query = session.prepare("""
+        INSERT INTO support_ticket_by_user (
+            user_id, ticket_id, subject, status, message, response, create_at, responded_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """)
+    session.execute(query, (
+        user_id, ticket_id, subject, status, message, response, create_at, None
+    ))
+    print(f"Ticket creado exitosamente.")
